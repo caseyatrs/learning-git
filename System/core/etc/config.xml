@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <system>
     <app>
-        <class></class>
+        <class>App</class>
     </app>
     <paths>
-        <app></app>
+        <root>/Applications/XAMPP/xamppfiles/htdocs/fw/</root>
+        <app>{{root}}App/</app>
         <autoloader></autoloader>
+        <system_core>{{root}}System/core/</system_core>
+        <system_lib>{{root}}System/lib/</system_lib>
     </paths>
+    <helpers>
+        <directory>helpers/</directory>
+        <helper>
+            <file>form.php</file>
+        </helper>
+        <helper>
+            <file>url.php</file>
+        </helper>
+        <helper>
+            <file>debug.php</file>
+        </helper>
+    </helpers>
+    <events>
+        <request>Router</request>
+        <ajax>AjaxRouter</ajax>
+    </events>
 </system>
