@@ -29,6 +29,10 @@ final class System {
         System::loadLib();
         System::$app->run();
     }
+    
+    public function getConfig(){
+        return System::$config;
+    }
 
     /**
      *

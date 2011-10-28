@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+    <module>
+        <module_name>HelloWorld</module_name>
+        <routes>
+            <helloworld>
+                <controller>
+                    <class>HelloWorld_Controller_Index</class>
+                </controller>
+            </helloworld>
+        </routes>
+    </module>
+</app>
