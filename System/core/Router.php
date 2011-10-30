@@ -14,12 +14,10 @@ class Router {
         $this->initRequest();
         $this->initResponse();
         
-        $base = "testing";
-        $action = "index";
         //search for matching urls through all registered controllers
-        $controllers = System::$app->getControllers($base);
+        $controllers = System::$app->getControllers($this->getRequest()->getBase());
         foreach($controllers as $controller){
-            $action = $controller->getAction($action);
+            $action = $controller->getAction($this->getRequest()->getAction());
             
             $this->getResponse()->process($controller,$action);
             

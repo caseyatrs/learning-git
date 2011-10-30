@@ -2,13 +2,13 @@
 <app>
     <modules>
         <module>
-            <module_name>HelloWorld</module_name>
+            <module_name>Install</module_name>
             <routes>
-                <helloworld>
+                <install>
                     <controller>
-                        <class>HelloWorld_Controller_Index</class>
+                        <class>Install_Controller_Index</class>
                     </controller>
-                </helloworld>
+                </install>
             </routes>
         </module>
     </modules>

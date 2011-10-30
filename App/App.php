@@ -31,7 +31,7 @@ class App {
             while($file = readdir($dir)){
                 if($file != "." && $file != ".."){
                     $xml = simplexml_load_file($modDir . $file);
-                    if(is_array($xml->module)){
+                    if(count($xml->module) > 1){
                         foreach($xml->module as $mod){
                             $this->process_module_xml($mod);
                         }
@@ -51,19 +51,15 @@ class App {
     
     private function loadAppConfig(){
         foreach($this->modules as $module){
-//            dump($module);
             $modConfigFile = System::getPath('app_code') . $module . DIRECTORY_SEPARATOR . self::MODULE_CONFIG_DIR . DIRECTORY_SEPARATOR . self::MODULE_CONFIG_FILE;
-//            dump($modConfigFile);
             if(is_file($modConfigFile)){
                 $moduleConfig = simplexml_load_file($modConfigFile);
-//                dump($moduleConfig);
                 if($this->getConfig() == null){
                     $this->setConfig($moduleConfig);
                 } else {
                     $this->addConfig($moduleConfig);
                 }
             }
-            dump($this->getConfig()->modules);
         }
     }
     
@@ -72,22 +68,31 @@ class App {
     }
     
     private function setConfig($config){
-        $newConfig = new SimpleXMLElement('<app></app>');
-        $modArr = array();
-        foreach($config->module as $mod){
-            $modArr[] = $mod;
-//            dump($mod);
-//            $newConfig->modules->addChil $mod;
-        }
-        dump($modArr);
-        $newConfig->addChild('modules',$modArr);
-        dump($newConfig);
-        $this->config = $newConfig;
+        $this->config = $config;
         return $this;
     }
     
     private function addConfig($config){
         //merge the two config modules thingers
+        if(count($config->modules->module) > 1){
+            foreach($config->modules as $mod){
+                $this->appendSimpleXML($this->config->modules, $mod);
+            }
+        } else {
+            $this->appendSimpleXML($this->config->modules, $config->modules);
+        }
+        return $this;
+    }
+    
+    private function appendSimpleXML(&$simplexmlTo, &$simplexmlFrom){
+        foreach ($simplexmlFrom->children() as $simplexmlChild){
+            $simplexmlTemp = $simplexmlTo->addChild($simplexmlChild->getName(), (string) $simplexmlChild);
+            foreach ($simplexmlChild->attributes() as $attrKey => $attrValue){
+                $simplexmlTemp->addAttribute($attrKey, $attrValue);
+            }
+
+            $this->appendSimpleXML($simplexmlTemp, $simplexmlChild);
+        }
     }
     
     public function run($params = array()){
@@ -96,8 +101,18 @@ class App {
     }
     
     public function getControllers($base){
-        //get all the controllers assigned to that base name and return them as objects
-        $dumbController = new HelloWorld_Controller_Index();
-        return array($dumbController);
+        $controllersArr = array();
+        foreach($this->getConfig()->modules->module as $module){
+            foreach($module->routes->children() as $route){
+                if($route->getName() == $base) {
+                    $className = (string)$route->controller->class;
+                    $controllersArr[] = new $className;
+                }
+            }
+        }
+        if(count($controllersArr) == 0){
+            //TODO: fireoff 404 event
+        }
+        return $controllersArr;
     }
 }

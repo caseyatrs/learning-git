@@ -5,4 +5,9 @@
         <version>0.1.0</version>
         <enabled>true</enabled>
     </module>
+    <module>
+        <module_name>Install</module_name>
+        <version>0.1.0</version>
+        <enabled>true</enabled>
+    </module>
 </modules>
